@@ -4,5 +4,9 @@
     "description": "Serverless images sharing application",
     "type": "module",
     "main": "",
-    "author": "Ivan Mushketyk"
+    "author": "Ivan Mushketyk",
+    "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.214.0",
+        "@aws-sdk/lib-dynamodb": "^3.214.0"
+    }
 }
