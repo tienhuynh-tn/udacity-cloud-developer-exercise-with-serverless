@@ -7,6 +7,7 @@
     "author": "Ivan Mushketyk",
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.214.0",
-        "@aws-sdk/lib-dynamodb": "^3.214.0"
+        "@aws-sdk/lib-dynamodb": "^3.214.0",
+        "uuid": "^9.0.0"
     }
 }

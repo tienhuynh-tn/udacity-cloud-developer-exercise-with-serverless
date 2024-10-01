@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Group } from './Group'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Button, Card, Divider } from 'semantic-ui-react'
 import { getGroups } from '../api/groups-api'
-import { Card } from 'semantic-ui-react'
+import { Group } from './Group'
 
 export function GroupsList() {
   const [groups, setGroups] = useState([])
@@ -21,6 +22,18 @@ export function GroupsList() {
   return (
     <div>
       <h1>Groups</h1>
+
+      <Button
+        primary
+        size="huge"
+        className="add-button"
+        as={Link}
+        to="/groups/create"
+      >
+        Create new group
+      </Button>
+
+      <Divider clearing />
 
       <Card.Group>
         {groups.map((group) => {

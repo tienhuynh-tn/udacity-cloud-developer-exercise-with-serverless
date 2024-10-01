@@ -4,6 +4,7 @@ import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import { NotFound } from './components/NotFound'
 import { GroupsList } from './components/GroupsList'
+import { CreateGroup } from './components/CreateGroup'
 
 export default function App() {
   function generateMenu() {
@@ -27,6 +28,7 @@ export default function App() {
 
                 <Routes>
                   <Route path="/" exact element={<GroupsList />} />
+                  <Route path="/groups/create" element={<CreateGroup />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>
