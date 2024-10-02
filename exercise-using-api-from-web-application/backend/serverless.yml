@@ -36,6 +36,9 @@ functions:
           method: post
           path: groups
           cors: true
+          request:
+            schemas:
+              application/json: ${file(models/create-group-request.json)}
 
 resources:
   Resources:
