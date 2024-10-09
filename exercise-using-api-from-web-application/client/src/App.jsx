@@ -3,8 +3,10 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { Grid, Menu, Segment } from 'semantic-ui-react'
 
 import { NotFound } from './components/NotFound'
+import { ImagesList } from './components/ImagesList'
 import { GroupsList } from './components/GroupsList'
 import { CreateGroup } from './components/CreateGroup'
+import { CreateImage } from './components/CreateImage'
 
 export default function App() {
   function generateMenu() {
@@ -29,6 +31,8 @@ export default function App() {
                 <Routes>
                   <Route path="/" exact element={<GroupsList />} />
                   <Route path="/groups/create" element={<CreateGroup />} />
+                  <Route path="/images/:groupId" element={<ImagesList />} />
+                  <Route path="/images/:groupId/create" element={<CreateImage />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>
