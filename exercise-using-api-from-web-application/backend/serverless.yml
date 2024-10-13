@@ -14,6 +14,8 @@ provider:
     IMAGES_TABLE: Images-${self:provider.stage}
     IMAGE_ID_INDEX: ImageIdIndex
     IMAGES_S3_BUCKET: udagram-images-${self:provider.stage}-tienhuynh-tn
+    SIGNED_URL_EXPIRATION: 300
+    THUMBNAILS_S3_BUCKET: udagram-thumbnail-${self:provider.stage}
 
   iam:
     role:
@@ -38,6 +40,10 @@ provider:
             - s3:PutObject
             - s3:GetObject
           Resource: arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+          Resource: arn:aws:s3:::${self:provider.environment.THUMBNAILS_S3_BUCKET}/*
 
 functions:
   GetGroups:
@@ -63,7 +69,11 @@ functions:
       - http:
           method: post
           path: groups/{groupId}/images
-          cors: true
+          cors:
+            - enabled: true
+            - origin: '*'
+            - headers: '*'
+            - methods: '*'
           request:
             schemas:
               application/json: ${file(models/create-image-request.json)}
@@ -81,6 +91,13 @@ functions:
           method: get
           path: images/{imageId}
           cors: true
+  ResizeImage:
+    handler: src/lambda/s3/resizeImage.handler
+    events:
+      - s3:
+          bucket: ${self:provider.environment.IMAGES_S3_BUCKET}
+          event: s3:ObjectCreated:*
+          existing: true
 
 resources:
   Resources:
@@ -96,7 +113,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.GROUPS_TABLE}
     ImagesDynamoDBTable:
-      Type: "AWS::DynamoDB::Table"
+      Type: AWS::DynamoDB::Table
       Properties:
         AttributeDefinitions:
           - AttributeName: groupId
@@ -128,7 +145,8 @@ resources:
           RestrictPublicBuckets: false
         CorsConfiguration:
           CorsRules:
-            - AllowedOrigins:
+            -
+              AllowedOrigins:
                 - '*'
               AllowedHeaders:
                 - '*'
@@ -152,3 +170,7 @@ resources:
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_S3_BUCKET}/*'
         Bucket: !Ref AttachmentsBucket
+    ThumbnailsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.THUMBNAILS_S3_BUCKET}

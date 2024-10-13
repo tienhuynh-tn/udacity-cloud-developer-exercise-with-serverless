@@ -24,3 +24,10 @@ export async function createImage(newImage) {
 
   return await reply.json()
 }
+
+export async function uploadFile(uploadUrl, file) {
+  await fetch(uploadUrl, {
+    method: 'PUT',
+    body: file
+  })
+}

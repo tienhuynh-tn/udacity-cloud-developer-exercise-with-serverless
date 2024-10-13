@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import { useParams } from 'react-router-dom'
-import { createImage } from '../api/images-api'
+import { createImage, uploadFile } from '../api/images-api'
 
 const NO_UPLOAD = 'NoUpload'
 const UPLOADING_DATA = 'UploadingData'
+const UPLOADING_FILE = 'UploadingFile'
 
 export function CreateImage() {
   const { groupId } = useParams()
@@ -24,6 +25,11 @@ export function CreateImage() {
   }
 
   async function createNewImage() {
+    if (!file) {
+        alert('File should be selected')
+        return
+      }
+
     try {
       setUploadState(UPLOADING_DATA)
       const uploadInfo = await createImage({
@@ -33,12 +39,25 @@ export function CreateImage() {
 
       console.log('Created image', uploadInfo)
 
+
+      setUploadState(UPLOADING_FILE)
+      await uploadFile(uploadInfo.uploadUrl, file)
+
       alert('Image was uploaded!')
+
     } catch (e) {
       alert('Could not upload an image: ' + e.message)
     } finally {
       setUploadState(NO_UPLOAD)
     }
+  }
+
+  function handleFileChange(event) {
+    const files = event.target.files
+    if (!files) return
+
+    console.log('File change', files)
+    setFile(files[0])
   }
 
   return (
@@ -54,6 +73,15 @@ export function CreateImage() {
             onChange={(event) => setTitle(event.target.value)}
           />
         </Form.Field>
+        <Form.Field>
+            <label>Image</label>
+            <input
+              type="file"
+              accept="image/*"
+              placeholder="Image to upload"
+              onChange={handleFileChange}
+            />
+          </Form.Field>
 
         {renderButton()}
       </Form>
