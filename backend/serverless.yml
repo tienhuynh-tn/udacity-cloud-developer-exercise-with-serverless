@@ -9,6 +9,10 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
 
+  tracing:
+    lambda: true
+    apiGateway: true
+
   environment:
     GROUPS_TABLE: Groups-${self:provider.stage}
     IMAGES_TABLE: Images-${self:provider.stage}
@@ -44,6 +48,12 @@ provider:
           Action:
             - s3:PutObject
           Resource: arn:aws:s3:::${self:provider.environment.THUMBNAILS_S3_BUCKET}/*
+        - Effect: "Allow"
+          Action:
+            - "xray:PutTraceSegments"
+            - "xray:PutTelemetryRecords"
+          Resource:
+            - "*"
 
 functions:
   GetGroups:
@@ -69,11 +79,7 @@ functions:
       - http:
           method: post
           path: groups/{groupId}/images
-          cors:
-            - enabled: true
-            - origin: '*'
-            - headers: '*'
-            - methods: '*'
+          cors: true
           request:
             schemas:
               application/json: ${file(models/create-image-request.json)}
