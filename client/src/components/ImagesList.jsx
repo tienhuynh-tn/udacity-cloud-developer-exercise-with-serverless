@@ -3,22 +3,28 @@ import { getImages } from '../api/images-api'
 import { Card, Divider, Button } from 'semantic-ui-react'
 import { UdagramImage } from './UdagramImage'
 import { Link, useParams } from 'react-router-dom'
+import { useAuth0 } from '@auth0/auth0-react'
 
 export function ImagesList() {
   const { groupId } = useParams()
   const [images, setImages] = useState([])
+  const { getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
     async function fetchImages() {
       try {
-        const images = await getImages(groupId)
+        const accessToken = await getAccessTokenSilently({
+          audience: `https://tienhuynh-tn.au.auth0.com/api/v2/`,
+          scope: 'read:images'
+        })
+        const images = await getImages(accessToken, groupId)
         setImages(images)
       } catch (e) {
         alert(`Failed to fetch images for group : ${e.message}`)
       }
     }
     fetchImages()
-  }, [groupId])
+  }, [groupId, getAccessTokenSilently])
 
   return (
     <div>

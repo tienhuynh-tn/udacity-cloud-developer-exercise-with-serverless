@@ -1,7 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Form, Button } from 'semantic-ui-react'
 import { useParams } from 'react-router-dom'
 import { createImage, uploadFile } from '../api/images-api'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const NO_UPLOAD = 'NoUpload'
 const UPLOADING_DATA = 'UploadingData'
@@ -12,6 +13,7 @@ export function CreateImage() {
   const [title, setTitle] = useState('')
   const [file, setFile] = useState(undefined)
   const [uploadState, setUploadState] = useState(NO_UPLOAD)
+  const { getAccessTokenSilently } = useAuth0()
 
   function renderButton() {
     return (
@@ -26,25 +28,27 @@ export function CreateImage() {
 
   async function createNewImage() {
     if (!file) {
-        alert('File should be selected')
-        return
-      }
+      alert('File should be selected')
+      return
+    }
 
     try {
       setUploadState(UPLOADING_DATA)
-      const uploadInfo = await createImage({
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://tienhuynh-tn.au.auth0.com/api/v2/`,
+        scope: 'write:image'
+      })
+      const uploadInfo = await createImage(accessToken, {
         groupId: groupId,
         title: title
       })
 
       console.log('Created image', uploadInfo)
 
-
       setUploadState(UPLOADING_FILE)
       await uploadFile(uploadInfo.uploadUrl, file)
 
       alert('Image was uploaded!')
-
     } catch (e) {
       alert('Could not upload an image: ' + e.message)
     } finally {
@@ -74,14 +78,14 @@ export function CreateImage() {
           />
         </Form.Field>
         <Form.Field>
-            <label>Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              placeholder="Image to upload"
-              onChange={handleFileChange}
-            />
-          </Form.Field>
+          <label>Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            placeholder="Image to upload"
+            onChange={handleFileChange}
+          />
+        </Form.Field>
 
         {renderButton()}
       </Form>

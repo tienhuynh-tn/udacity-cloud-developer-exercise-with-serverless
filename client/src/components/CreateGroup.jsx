@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useAuth0 } from '@auth0/auth0-react'
 import { Form, Button } from 'semantic-ui-react'
 import { createGroup } from '../api/groups-api'
 
@@ -6,6 +7,7 @@ export function CreateGroup() {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [uploadingGroup, setUploadingGroup] = useState(false)
+  const { getAccessTokenSilently } = useAuth0()
 
   async function submitForm() {
     try {
@@ -15,7 +17,11 @@ export function CreateGroup() {
       }
 
       setUploadingGroup(true)
-      const group = await createGroup({
+      const accessToken = await getAccessTokenSilently({
+        audience: `https://tienhuynh-tn.au.auth0.com/api/v2/`,
+        scope: 'write:groups'
+      })
+      const group = await createGroup(accessToken, {
         name: name,
         description: description
       })
