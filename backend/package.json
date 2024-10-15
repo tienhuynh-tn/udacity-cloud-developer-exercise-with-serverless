@@ -11,6 +11,10 @@
         "uuid": "^9.0.0",
         "@aws-sdk/client-s3": "^3.214.0",
         "@aws-sdk/s3-request-presigner": "^3.214.0",
-        "sharp": "^0.31.3"
+        "sharp": "^0.31.3",
+        "@aws-sdk/credential-provider-node": "^3.238.0",
+        "@opensearch-project/opensearch": "^2.1.0",
+        "aws-opensearch-connector": "^1.1.0",
+        "aws4": "^1.11.0"
     }
 }

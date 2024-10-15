@@ -99,6 +99,8 @@ functions:
           event: s3:ObjectCreated:*
           existing: true
   SyncWithOpenSearch:
+    environment:
+      OS_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint
     handler: src/lambda/dynamoDb/openSearchSync.handler
     events:
       - stream:
