@@ -182,3 +182,38 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.THUMBNAILS_S3_BUCKET}
+    ImagesSearch:
+      Type: AWS::OpenSearchService::Domain
+      Properties:
+        EngineVersion: 'OpenSearch_2.3'
+        DomainName: images-search-${self:provider.stage}
+        ClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: '1'
+          ZoneAwarenessEnabled: false
+          InstanceType: t3.small.search
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: 'gp2'
+        AccessPolicies:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'es:*'
+              Resource: '*'
+        AdvancedSecurityOptions:
+          Enabled: true
+          InternalUserDatabaseEnabled: true
+          MasterUserOptions:
+            MasterUserName: admin
+            MasterUserPassword: Admin!23
+        EncryptionAtRestOptions:
+          Enabled: true
+        NodeToNodeEncryptionOptions:
+          Enabled: true
+        DomainEndpointOptions:
+          EnforceHTTPS: true
