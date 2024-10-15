@@ -63,6 +63,7 @@ functions:
     events:
       - http:
           method: get
+          authorizer: Auth
           path: groups
           cors: true
   CreateGroup:
@@ -81,6 +82,7 @@ functions:
     events:
       - http:
           method: post
+          authorizer: Auth
           path: groups/{groupId}/images
           cors: true
           request:
@@ -91,6 +93,7 @@ functions:
     events:
       - http:
           method: get
+          authorizer: Auth
           path: groups/{groupId}/images
           cors: true
   GetImage:
@@ -98,6 +101,7 @@ functions:
     events:
       - http:
           method: get
+          authorizer: Auth
           path: images/{imageId}
           cors: true
   ResizeImage:
