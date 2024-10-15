@@ -21,6 +21,7 @@
         "@middy/core": "^4.0.9",
         "@middy/http-cors": "^4.0.9",
         "@middy/http-error-handler": "^4.0.9",
-        "http-errors": "^2.0.0"
+        "http-errors": "^2.0.0",
+        "serverless-iam-roles-per-function": "^3.2.0"
     }
 }
